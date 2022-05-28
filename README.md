@@ -1,13 +1,8 @@
-# Rename files and folders in root folder
+# Build Executor File
 
 ## Usage
 
 ```cmd
-node src/index.js -p C://Test -b -y
+npm run build
+npm run pkg
 ```
-
--   -b : Create backup file
--   **-p [path]** : Folder Path
--   -y : Default Rename Method
-
-### Thanks for choosing this !

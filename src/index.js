@@ -20,7 +20,7 @@ const cmdOpts = program.opts();
 const opts = {};
 
 let useBackup = cmdOpts.b || undefined;
-let folderPath = cmdOpts.p || path.basename(dir);
+let folderPath = cmdOpts.p || dir;
 let isFinish = cmdOpts.y || 0;
 let method = isFinish ? 'number' : '';
 

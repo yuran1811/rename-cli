@@ -24,4 +24,4 @@ const alphabetOrder = (n) => {
 	return res;
 };
 
-export default alphabetOrder;
+module.exports = alphabetOrder;

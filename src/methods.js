@@ -1,4 +1,4 @@
-import rename from './utils/rename.js';
+const rename = require('./utils/rename');
 
 const methods = {
 	number: {
@@ -27,4 +27,4 @@ const methods = {
 	},
 };
 
-export default methods;
+module.exports = methods;

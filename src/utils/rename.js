@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-import NAME_CONST from '../constants/name.js';
-import alphabetOrder from './alphabetOrder.js';
+const fs = require('fs');
+const path = require('path');
+const NAME_CONST = require('../constants/name');
+const alphabetOrder = require('./alphabetOrder');
 
 const processing = {
 	backup: {
@@ -183,4 +183,4 @@ class Rename {
 	folderNameAndDate(dir, opts, useBackup) {}
 }
 
-export default new Rename();
+module.exports = new Rename();

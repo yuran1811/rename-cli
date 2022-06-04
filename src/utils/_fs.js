@@ -1,12 +1,4 @@
-import {
-	copyFileSync,
-	existsSync,
-	mkdirSync,
-	readdirSync,
-	readFileSync,
-	rmSync,
-	writeFileSync,
-} from 'fs';
+const { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } = require('fs');
 
 const _fs = {
 	f: {
@@ -35,4 +27,4 @@ const _fs = {
 	},
 };
 
-export default _fs;
+module.exports = _fs;

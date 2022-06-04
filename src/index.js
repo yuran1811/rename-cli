@@ -1,11 +1,8 @@
 #! /usr/bin/env node
-import { Command } from 'commander';
-import pkg from 'inquirer';
-import path from 'path';
-import methods from './methods.js';
-
-const program = new Command();
-const { prompt } = pkg;
+const { prompt } = require('inquirer');
+const { program } = require('commander');
+const path = require('path');
+const methods = require('./methods');
 
 const dir = process.cwd();
 const opts = {};

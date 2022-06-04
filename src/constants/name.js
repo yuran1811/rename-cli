@@ -3,4 +3,4 @@ const NAME_CONST = {
 	undoRenameFolder: '__undo_rename_folder.json',
 };
 
-export default NAME_CONST;
+module.exports = NAME_CONST;

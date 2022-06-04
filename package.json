@@ -12,20 +12,11 @@
 		"rename"
 	],
 	"scripts": {
-		"build": "pkg -o rename-cli -t node16-win-x64 -C GZip --public-packages \"*\" --public src/index.js",
-		"start": "node src"
+		"start": "node src",
+		"build": "pkg -o gd -t node16-linux,node16-macos,node16-win -C GZip src/index.js"
 	},
 	"dependencies": {
 		"commander": "^9.3.0",
 		"inquirer": "^8.2.4"
-	},
-	"devDependencies": {},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/yuran1811/rename-cli.git"
-	},
-	"bugs": {
-		"url": "https://github.com/yuran1811/rename-cli/issues"
-	},
-	"homepage": "https://github.com/yuran1811/rename-cli#readme"
+	}
 }

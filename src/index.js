@@ -8,23 +8,33 @@ const program = new Command();
 const { prompt } = pkg;
 
 const dir = process.cwd();
+const opts = {};
 
 program
-	.option('-b', `Create backup file`)
-	.option('-p <path>', `Folder Path`)
-	.option('-y', `Default Rename Method`);
-program.parse();
+	.option('-y', `Default rename method`)
+	.option('-b, --backup', `No anything else`)
+	.option('-p, --path <path>', `Folder path`)
+	.showHelpAfterError('( Add --help for additional information )')
+	.parse();
 
 const cmdOpts = program.opts();
 
-const opts = {};
-
-let useBackup = cmdOpts.b || undefined;
-let folderPath = cmdOpts.p || dir;
+let useBackup = cmdOpts.backup || null;
+let folderPath = cmdOpts.path || null;
 let isFinish = cmdOpts.y || 0;
 let method = isFinish ? 'number' : '';
 
 (async () => {
+	if (folderPath === null)
+		folderPath = (
+			await prompt({
+				name: 'folderPath',
+				type: 'input',
+				message: 'Rename in folder: ',
+				default: path.resolve(dir),
+			})
+		).folderPath;
+
 	const { optList } = await prompt({
 		name: 'optList',
 		type: 'checkbox',
@@ -48,7 +58,7 @@ let method = isFinish ? 'number' : '';
 			})
 		).method;
 
-	if (useBackup === undefined)
+	if (useBackup === null)
 		useBackup = (
 			await prompt({
 				name: 'useBackup',
@@ -67,5 +77,5 @@ let method = isFinish ? 'number' : '';
 		}
 	});
 
-	console.log(`Successfully!`);
+	console.log(`\nAll things done!`);
 })();

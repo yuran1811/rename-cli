@@ -12,7 +12,7 @@
 		"rename"
 	],
 	"scripts": {
-		"pkg": "pkg -o cli -t node16-win-x64 -C GZip --public-packages \"*\" --public ./build/src/index.js",
+		"pkg": "pkg -o cli -t node16-linux,node16-macos,node16-win -C GZip --public-packages \"*\" --public ./build/src/index.js",
 		"clean": "rm -rf build && mkdir build",
 		"build-babel": "babel ./src -d ./build/src",
 		"build": "npm run clean && npm run build-babel"
@@ -28,13 +28,5 @@
 		"@babel/node": "^7.17.10",
 		"@babel/plugin-transform-runtime": "^7.18.2",
 		"@babel/preset-env": "^7.18.2"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/yuran1811/rename-cli.git"
-	},
-	"bugs": {
-		"url": "https://github.com/yuran1811/rename-cli/issues"
-	},
-	"homepage": "https://github.com/yuran1811/rename-cli#readme"
+	}
 }

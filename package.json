@@ -1,22 +1,22 @@
 {
-	"name": "rename-cli",
-	"version": "1.0.0",
-	"description": "Rename files and folders in root folder",
-	"author": "yuran1811",
-	"license": "MIT",
-	"bin": "src/index.js",
-	"main": "src/index.js",
-	"type": "module",
-	"keywords": [
-		"cli",
-		"rename"
-	],
-	"scripts": {
-		"start": "node src",
-		"build": "pkg -o gd -t node16-linux,node16-macos,node16-win -C GZip src/index.js"
-	},
-	"dependencies": {
-		"commander": "^9.3.0",
-		"inquirer": "^8.2.4"
-	}
+  "name": "rename-cli",
+  "version": "1.0.1",
+  "description": "Rename files and folders in root folder",
+  "author": "yuran1811",
+  "license": "MIT",
+  "bin": "src/index.js",
+  "main": "src/index.js",
+  "type": "module",
+  "keywords": [
+    "cli",
+    "rename"
+  ],
+  "scripts": {
+    "start": "node src",
+    "build": "pkg -o gd -t node16-linux,node16-macos,node16-win -C GZip src/index.js"
+  },
+  "dependencies": {
+    "commander": "^9.3.0",
+    "inquirer": "^8.2.4"
+  }
 }

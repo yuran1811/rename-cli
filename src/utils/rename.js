@@ -4,183 +4,191 @@ import NAME_CONST from '../constants/name.js';
 import alphabetOrder from './alphabetOrder.js';
 
 const processing = {
-	backup: {
-		file(dir, data) {
-			const backupFilePath = path.resolve(dir, NAME_CONST.undoRenameFile);
+  backup: {
+    file(dir, data) {
+      const backupFilePath = path.resolve(dir, NAME_CONST.undoRenameFile);
 
-			const existBackupFile = fs.existsSync(backupFilePath);
-			const rawContent = existBackupFile
-				? fs.readFileSync(backupFilePath, {
-						encoding: 'utf-8',
-				  })
-				: '';
-			const content = rawContent ? JSON.parse(rawContent) : [];
+      const existBackupFile = fs.existsSync(backupFilePath);
+      const rawContent = existBackupFile
+        ? fs.readFileSync(backupFilePath, {
+            encoding: 'utf-8',
+          })
+        : '';
+      const content = rawContent ? JSON.parse(rawContent) : [];
 
-			const backupData = [
-				...content,
-				{
-					order: content ? content.length + 1 : 1,
-					date: Date.now(),
-					change: { ...data },
-				},
-			];
+      const backupData = [
+        ...content,
+        {
+          order: content ? content.length + 1 : 1,
+          date: Date.now(),
+          change: { ...data },
+        },
+      ];
 
-			fs.writeFileSync(backupFilePath, JSON.stringify(backupData));
-		},
+      fs.writeFileSync(backupFilePath, JSON.stringify(backupData));
+    },
 
-		folder(dir, data) {
-			const backupFilePath = path.resolve(
-				dir,
-				NAME_CONST.undoRenameFolder
-			);
+    folder(dir, data) {
+      const backupFilePath = path.resolve(dir, NAME_CONST.undoRenameFolder);
 
-			const existBackupFile = fs.existsSync(backupFilePath);
-			const rawContent = existBackupFile
-				? fs.readFileSync(backupFilePath, {
-						encoding: 'utf-8',
-				  })
-				: '';
-			const content = rawContent ? JSON.parse(rawContent) : [];
+      const existBackupFile = fs.existsSync(backupFilePath);
+      const rawContent = existBackupFile
+        ? fs.readFileSync(backupFilePath, {
+            encoding: 'utf-8',
+          })
+        : '';
+      const content = rawContent ? JSON.parse(rawContent) : [];
 
-			const backupData = [
-				...content,
-				{
-					order: content ? content.length + 1 : 1,
-					date: Date.now(),
-					change: { ...data },
-				},
-			];
+      const backupData = [
+        ...content,
+        {
+          order: content ? content.length + 1 : 1,
+          date: Date.now(),
+          change: { ...data },
+        },
+      ];
 
-			fs.writeFileSync(backupFilePath, JSON.stringify(backupData));
-		},
+      fs.writeFileSync(backupFilePath, JSON.stringify(backupData));
+    },
 
-		action(dir, opts, data, useBackup) {
-			if (!useBackup) return;
+    action(dir, opts, data, useBackup) {
+      if (!useBackup) return;
 
-			opts.file && this.file(dir, data.file);
-			opts.folder && this.folder(dir, data.folder);
-		},
-	},
+      opts.file && this.file(dir, data.file);
+      opts.folder && this.folder(dir, data.folder);
+    },
+  },
 
-	file(dir, getFileName) {
-		const undoRenameData = {};
-		const items = fs.readdirSync(dir);
+  file(dir, getFileName) {
+    const undoRenameData = {};
+    const items = fs.readdirSync(dir);
 
-		items.forEach((_) => {
-			const itemPath = path.resolve(dir, _);
-			const stats = fs.statSync(itemPath);
+    items.forEach((_) => {
+      const itemPath = path.resolve(dir, _);
+      const stats = fs.statSync(itemPath);
 
-			if (
-				!stats.isFile() ||
-				Object.values(NAME_CONST).includes(path.basename(_))
-			)
-				return;
+      if (!stats.isFile() || Object.values(NAME_CONST).includes(path.basename(_))) return;
 
-			const fileName = getFileName(_);
+      const fileName = getFileName(_);
 
-			undoRenameData[_] = fileName;
+      undoRenameData[_] = fileName;
 
-			fs.renameSync(itemPath, path.resolve(dir, fileName));
-		});
+      fs.renameSync(itemPath, path.resolve(dir, fileName));
+    });
 
-		return undoRenameData;
-	},
+    return undoRenameData;
+  },
 
-	folder(dir, getFolderName) {
-		const undoRenameFolderData = {};
-		const items = fs.readdirSync(dir);
+  folder(dir, getFolderName) {
+    const undoRenameFolderData = {};
+    const items = fs.readdirSync(dir);
 
-		items.forEach((_) => {
-			const itemPath = path.resolve(dir, _);
-			const stats = fs.statSync(itemPath);
+    items.forEach((_) => {
+      const itemPath = path.resolve(dir, _);
+      const stats = fs.statSync(itemPath);
 
-			if (
-				!stats.isDirectory() ||
-				Object.values(NAME_CONST).includes(path.basename(_))
-			)
-				return;
+      if (!stats.isDirectory() || Object.values(NAME_CONST).includes(path.basename(_))) return;
 
-			const folderName = getFolderName(_);
+      const folderName = getFolderName(_);
 
-			undoRenameFolderData[_] = folderName;
+      undoRenameFolderData[_] = folderName;
 
-			fs.renameSync(itemPath, path.resolve(dir, folderName));
-		});
+      fs.renameSync(itemPath, path.resolve(dir, folderName));
+    });
 
-		return undoRenameFolderData;
-	},
+    return undoRenameFolderData;
+  },
+
+  rebaseAll(dir, opts) {
+    let fileIdx = 0;
+    let folderIdx = 0;
+
+    const getFileName = (_) => `yuran-renamecli-temp-rebase-file_${++fileIdx}${path.extname(_)}`;
+    const getFolderName = (_) => `yuran-renamecli-temp-rebase-folder_${++folderIdx}`;
+
+    opts?.file && processing.file(dir, getFileName);
+    opts?.folder && processing.folder(dir, getFolderName);
+  },
 };
 
 class Rename {
-	number(dir, opts, useBackup) {
-		let fileIdx = 0;
-		let folderIdx = 0;
+  number(dir, opts, useBackup) {
+    processing.rebaseAll(dir, opts);
 
-		const getFileName = (_) => `${++fileIdx}${path.extname(_)}`;
-		const getFolderName = (_) => `${++folderIdx}`;
+    let fileIdx = 0;
+    let folderIdx = 0;
 
-		const data = {};
+    const getFileName = (_) => `${++fileIdx}${path.extname(_)}`;
+    const getFolderName = (_) => `${++folderIdx}`;
 
-		opts?.file && (data.file = processing.file(dir, getFileName));
-		opts?.folder && (data.folder = processing.folder(dir, getFolderName));
+    const data = {};
 
-		processing.backup.action(dir, opts, data, useBackup);
-	}
+    opts?.file && (data.file = processing.file(dir, getFileName));
+    opts?.folder && (data.folder = processing.folder(dir, getFolderName));
 
-	alphabet(dir, opts, useBackup) {
-		let fileIdx = 0;
-		let folderIdx = 0;
+    processing.backup.action(dir, opts, data, useBackup);
+  }
 
-		const getFileName = (_) =>
-			`${alphabetOrder(++fileIdx)}${path.extname(_)}`;
-		const getFolderName = (_) => `${alphabetOrder(++folderIdx)}`;
+  alphabet(dir, opts, useBackup) {
+    processing.rebaseAll(dir, opts);
 
-		const data = {};
+    let fileIdx = 0;
+    let folderIdx = 0;
 
-		opts?.file && (data.file = processing.file(dir, getFileName));
-		opts?.folder && (data.folder = processing.folder(dir, getFolderName));
+    const getFileName = (_) => `${alphabetOrder(++fileIdx)}${path.extname(_)}`;
+    const getFolderName = (_) => `${alphabetOrder(++folderIdx)}`;
 
-		processing.backup.action(dir, opts, data, useBackup);
-	}
+    const data = {};
 
-	numberAndDate(dir, opts, useBackup) {}
+    opts?.file && (data.file = processing.file(dir, getFileName));
+    opts?.folder && (data.folder = processing.folder(dir, getFolderName));
 
-	folderNameAndNumber(dir, opts, useBackup) {
-		let fileIdx = 0;
-		let folderIdx = 0;
+    processing.backup.action(dir, opts, data, useBackup);
+  }
 
-		const folderName = path.basename(dir);
-		const getFileName = (_) =>
-			`${folderName} - ${++fileIdx}${path.extname(_)}`;
-		const getFolderName = (_) => `${folderName} - ${++folderIdx}`;
+  numberAndDate(dir, opts, useBackup) {
+    processing.rebaseAll(dir, opts);
+  }
 
-		const data = {};
+  folderNameAndNumber(dir, opts, useBackup) {
+    processing.rebaseAll(dir, opts);
 
-		opts?.file && (data.file = processing.file(dir, getFileName));
-		opts?.folder && (data.folder = processing.folder(dir, getFolderName));
+    let fileIdx = 0;
+    let folderIdx = 0;
 
-		processing.backup.action(dir, opts, data, useBackup);
-	}
+    const folderName = path.basename(dir);
+    const getFileName = (_) => `${folderName} - ${++fileIdx}${path.extname(_)}`;
+    const getFolderName = (_) => `${folderName} - ${++folderIdx}`;
 
-	folderNameAndAlphabet(dir, opts, useBackup) {
-		let fileIdx = 0;
-		let folderIdx = 0;
+    const data = {};
 
-		const folderName = path.basename(dir);
-		const getFileName = (_) =>
-			`${folderName} - ${alphabetOrder(++fileIdx)}${path.extname(_)}`;
-		const getFolderName = (_) =>
-			`${folderName} - ${alphabetOrder(++folderIdx)}`;
+    opts?.file && (data.file = processing.file(dir, getFileName));
+    opts?.folder && (data.folder = processing.folder(dir, getFolderName));
 
-		const data = {};
+    processing.backup.action(dir, opts, data, useBackup);
+  }
 
-		opts?.file && (data.file = processing.file(dir, getFileName));
-		opts?.folder && (data.folder = processing.folder(dir, getFolderName));
+  folderNameAndAlphabet(dir, opts, useBackup) {
+    processing.rebaseAll(dir, opts);
 
-		processing.backup.action(dir, opts, data, useBackup);
-	}
+    let fileIdx = 0;
+    let folderIdx = 0;
 
-	folderNameAndDate(dir, opts, useBackup) {}
+    const folderName = path.basename(dir);
+    const getFileName = (_) => `${folderName} - ${alphabetOrder(++fileIdx)}${path.extname(_)}`;
+    const getFolderName = (_) => `${folderName} - ${alphabetOrder(++folderIdx)}`;
+
+    const data = {};
+
+    opts?.file && (data.file = processing.file(dir, getFileName));
+    opts?.folder && (data.folder = processing.folder(dir, getFolderName));
+
+    processing.backup.action(dir, opts, data, useBackup);
+  }
+
+  folderNameAndDate(dir, opts, useBackup) {
+    processing.rebaseAll(dir, opts);
+  }
 }
 
 export default new Rename();
